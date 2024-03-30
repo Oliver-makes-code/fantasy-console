@@ -1,0 +1,11 @@
+[package]
+name = "console"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+egui_glium = "0.26.2"
+glium = "0.34.0"
+ux = "0.1.5"
+wasmtime = "19.0.0"
+winit = "0.29"
