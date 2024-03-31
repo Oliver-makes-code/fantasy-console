@@ -1,11 +1,12 @@
 #include <stdint.h>
 #include "std.h"
+#include "extern.h"
 
 // The size of a page in WASM
 #define PAGE_SIZE 65536
 
 // Gets the number of pages for the memory
-uint32_t memory_size() {
+uint32_t std_internal_MemorySize() {
     uint32_t value;
     asm volatile(
         "memory.size 0\n"
@@ -16,7 +17,7 @@ uint32_t memory_size() {
 }
 
 // Grows the memory by amount
-uint32_t memory_grow(uint32_t amount) {
+uint32_t std_internal_MemoryGrow(uint32_t amount) {
     uint32_t value;
     asm volatile(
         "local.get %1\n"
@@ -28,8 +29,14 @@ uint32_t memory_grow(uint32_t amount) {
     return value;
 }
 
-uint8_t *internal_page;
+// A page we keep reserved for internal data stuctures.
+uint8_t *std_internal_DataPage;
 
 void std_Init() {
-    internal_page = (uint8_t *)(memory_size() * PAGE_SIZE);
+    std_internal_DataPage = (uint8_t *)(std_internal_MemorySize() * PAGE_SIZE);
+    std_internal_MemoryGrow(1);
+
+    dbg_WriteString(":3\n");
+
+    // Set up data structures and stuff
 }

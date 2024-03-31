@@ -21,9 +21,8 @@ pub struct TileMap {
 pub struct Sprite {
     pub palette: u8,
     pub tile: u8,
-    pub position: (i16, i16)
+    pub position: (i16, i16),
 }
-
 
 #[derive(Debug, Clone, Copy)]
 pub struct TileState {

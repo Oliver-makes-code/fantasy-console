@@ -69,7 +69,10 @@ impl WasmCart {
             tile::get_background_scroll_pre,
             tile::get_background_scroll_pre_x,
             tile::get_background_scroll_pre_y,
-            tile::set_background_transformation_matrix
+            tile::set_background_transformation_matrix,
+            dbg::write_character,
+            dbg::write_str,
+            dbg::end_line
         );
 
         let instance = linker.instantiate(&mut store, &module)?;
@@ -98,6 +101,35 @@ macro func($linker: expr, $($module: ident :: $f: ident),+) {
     )+
 }
 
+mod dbg {
+    use std::ffi::CStr;
+
+    use wasmtime::Caller;
+
+    use super::WasmCart;
+
+    pub fn write_character(c: u32) {
+        print!("{}", char::from_u32(c).unwrap());
+    }
+
+    pub fn write_str(mut caller: Caller<()>, s: u32) {
+        let cart = WasmCart::get();
+        let mem = cart.get_memory(&mut caller);
+
+        unsafe {
+            let p = mem.data_ptr(caller).offset(s as isize) as *const i8;
+
+            let cs = CStr::from_ptr(p);
+
+            print!("{}", cs.to_str().unwrap());
+        }
+    }
+
+    pub fn end_line() {
+        println!();
+    }
+}
+
 mod tile {
     use wasmtime::Caller;
 
@@ -121,8 +153,8 @@ mod tile {
     }
 
     pub fn set_background_tile(bg: u32, x: i32, y: i32, tile: i32) {
-        TileState::get().backgrounds[bg as usize].tiles[(x & 0b111111) as usize + (y & 0b111111) as usize * 64] =
-            tile as u8;
+        TileState::get().backgrounds[bg as usize].tiles
+            [(x & 0b111111) as usize + (y & 0b111111) as usize * 64] = tile as u8;
     }
 
     pub fn get_background_scroll_pre(bg: u32) -> (u32, u32) {

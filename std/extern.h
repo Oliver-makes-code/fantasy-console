@@ -65,6 +65,16 @@ extern int16_t tile_Get_BackgroundScroll_Post_Y(uint8_t background);
 WASM("tile", "set_background_transformation_matrix")
 extern void tile_Set_BackgroundMatrix(uint8_t background, int16_t a, int16_t b, int16_t c, int16_t d);
 
+
+WASM("dbg", "write_character")
+extern void dbg_WriteCharacter(char c);
+
+WASM("dbg", "end_line")
+extern void dbg_EndLine();
+
+WASM("dbg", "write_str")
+extern void dbg_WriteString(char *c);
+
 #ifdef  __cplusplus
 }
 #endif

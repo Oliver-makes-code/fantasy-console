@@ -64,5 +64,5 @@ void update() {
 }
 
 void v_blank(uint8_t y) {
-
+    tile_Set_BackgroundScroll_Pre(0, y-16, y-16);
 }

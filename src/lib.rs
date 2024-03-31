@@ -137,7 +137,8 @@ impl WindowState {
                 let tile_state = TileState::get();
                 let mut color = tile_state.palette[tile_state.background_color as usize];
                 for i in 0..8 {
-                    let (palette_offset, palette) = tile_state.backgrounds[i].get_color_offset(&tile_state, x, y);
+                    let (palette_offset, palette) =
+                        tile_state.backgrounds[i].get_color_offset(&tile_state, x, y);
                     if palette_offset != 0 {
                         color = tile_state.palette[palette as usize + palette_offset as usize - 1];
                         break;
@@ -192,10 +193,7 @@ impl WindowState {
                         ui.label(format!("Post-scroll: {:?}", bg.post_offset));
                         ui.label(format!(
                             "Matrix: ({}, {}, {}, {})",
-                            bg.matrix.0 .0,
-                            bg.matrix.0 .1,
-                            bg.matrix.1 .0,
-                            bg.matrix.1 .1
+                            bg.matrix.0 .0, bg.matrix.0 .1, bg.matrix.1 .0, bg.matrix.1 .1
                         ));
                     }
                 });
