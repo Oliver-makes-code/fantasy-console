@@ -51,13 +51,13 @@ void init() {
 
     tile_SetBackgroundTile(0, 0, 0, 1);
 
-    tile_Set_BackgroundScroll_Pre(0, -64, -64);
+    // tile_Set_BackgroundScroll_Pre(0, 32700, 0);
 
-    tile_Set_BackgroundMatrix(0, 181, -181, 181, 181);
+    // tile_Set_BackgroundMatrix(0, 181, -181, 181, 181);
 }
 
 void update() {
-    // tile_Set_BackgroundScroll_Pre(0, tile_Get_BackgroundScroll_Pre_X(0) + 1, 0);
+    tile_Set_BackgroundScroll_Pre(0, tile_Get_BackgroundScroll_Pre_X(0) + 1, 0);
 }
 
 void v_blank(uint8_t y) {

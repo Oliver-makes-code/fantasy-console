@@ -99,7 +99,6 @@ macro func($linker: expr, $($module: ident :: $f: ident),+) {
 }
 
 mod tile {
-    use ux::i11;
     use wasmtime::Caller;
 
     use crate::{math::Fixed, tile::TileState};
@@ -142,20 +141,15 @@ mod tile {
     }
 
     pub fn set_background_scroll_pre(bg: u32, x: i32, y: i32) {
-        let x = i11::new(x as i16 % 1024);
-        let y = i11::new(y as i16 % 1024);
-
-        TileState::get().backgrounds[bg as usize].pre_offset = (x, y);
+        TileState::get().backgrounds[bg as usize].pre_offset = (x as i16, y as i16);
     }
 
     pub fn set_background_scroll_pre_x(bg: u32, x: i32) {
-        let x = i11::new(x as i16 % 1024);
-        TileState::get().backgrounds[bg as usize].pre_offset.0 = x;
+        TileState::get().backgrounds[bg as usize].pre_offset.0 = x as i16;
     }
 
     pub fn set_background_scroll_pre_y(bg: u32, y: i32) {
-        let y = i11::new(y as i16 % 1024);
-        TileState::get().backgrounds[bg as usize].pre_offset.0 = y;
+        TileState::get().backgrounds[bg as usize].pre_offset.0 = y as i16;
     }
 
     pub fn get_background_scroll_post(bg: u32) -> (u32, u32) {
@@ -174,20 +168,15 @@ mod tile {
     }
 
     pub fn set_background_scroll_post(bg: u32, x: i32, y: i32) {
-        let x = i11::new(x as i16 % 1024);
-        let y = i11::new(y as i16 % 1024);
-
-        TileState::get().backgrounds[bg as usize].post_offset = (x, y);
+        TileState::get().backgrounds[bg as usize].post_offset = (x as i16, y as i16);
     }
 
     pub fn set_background_scroll_post_x(bg: u32, x: i32) {
-        let x = i11::new(x as i16 % 1024);
-        TileState::get().backgrounds[bg as usize].post_offset.0 = x;
+        TileState::get().backgrounds[bg as usize].post_offset.0 = x as i16;
     }
 
     pub fn set_background_scroll_post_y(bg: u32, y: i32) {
-        let y = i11::new((y) as i16 % 1024);
-        TileState::get().backgrounds[bg as usize].post_offset.0 = y;
+        TileState::get().backgrounds[bg as usize].post_offset.0 = y as i16;
     }
 
     pub fn set_background_transformation_matrix(bg: u32, a: i32, b: i32, c: i32, d: i32) {

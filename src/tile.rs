@@ -1,25 +1,29 @@
 use std::sync::{Mutex, MutexGuard, OnceLock};
 
-use ux::i11;
-
 use crate::{color::Color, math::Fixed};
 
 static STATE: OnceLock<Mutex<TileState>> = OnceLock::new();
 
 /// 1 nibble per pixel, 16*16 pixels, 128 bytes
 #[derive(Debug, Clone, Copy)]
-#[repr(C)]
 pub struct Tile(pub [u8; 128]);
 
 #[derive(Debug, Clone, Copy)]
-#[repr(C)]
 pub struct TileMap {
     pub palettes: [u8; 4096],
     pub tiles: [u8; 4096],
-    pub pre_offset: (i11, i11),
-    pub post_offset: (i11, i11),
+    pub pre_offset: (i16, i16),
+    pub post_offset: (i16, i16),
     pub matrix: ((Fixed, Fixed), (Fixed, Fixed)),
 }
+
+#[derive(Debug, Clone, Copy)]
+pub struct Sprite {
+    pub palette: u8,
+    pub tile: u8,
+    pub position: (i16, i16)
+}
+
 
 #[derive(Debug, Clone, Copy)]
 pub struct TileState {
@@ -28,7 +32,6 @@ pub struct TileState {
     pub background_color: u8,
     pub backgrounds: [TileMap; 8],
 }
-
 impl Tile {
     pub fn get_color(&self, idx: usize) -> u8 {
         let b = self.0[idx / 2];
@@ -50,15 +53,15 @@ impl TileMap {
     }
 
     fn transform_coords(&self, px: isize, py: isize) -> (usize, usize) {
-        let tx = px + i16::from(self.pre_offset.0) as isize;
-        let ty = py + i16::from(self.pre_offset.1) as isize;
+        let tx = px + self.pre_offset.0 as isize;
+        let ty = py + self.pre_offset.1 as isize;
 
         let mut x = tx * self.matrix.0 .0 + ty * self.matrix.0 .1;
         let mut y = tx * self.matrix.1 .0 + ty * self.matrix.1 .1;
 
-        x += i16::from(self.post_offset.0) as isize;
+        x += self.post_offset.0 as isize;
 
-        y += i16::from(self.post_offset.1) as isize;
+        y += self.post_offset.1 as isize;
 
         x = (x % 1024 + 1024) % 1024;
 
@@ -108,8 +111,8 @@ impl TileState {
             backgrounds: [TileMap {
                 palettes: [0; 4096],
                 tiles: [0; 4096],
-                pre_offset: (i11::new(0), i11::new(0)),
-                post_offset: (i11::new(0), i11::new(0)),
+                pre_offset: (0, 0),
+                post_offset: (0, 0),
                 matrix: (
                     (Fixed::from(256), Fixed::from(0)),
                     (Fixed::from(0), Fixed::from(256)),
