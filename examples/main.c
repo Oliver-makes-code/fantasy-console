@@ -1,4 +1,5 @@
-#include "extern.h"
+#include <extern.h>
+#include <std.h>
 #include <stdint.h>
 
 const uint8_t TILE_0[] = {
@@ -40,6 +41,8 @@ const uint8_t TILE_1[] = {
 };
 
 void init() {
+    std_Init();
+
     tile_WritePalette(0, 0x8080FF);
     tile_WritePalette(1, 0x000000);
     tile_WritePalette(2, 0x00FF00);
@@ -50,7 +53,7 @@ void init() {
     tile_WriteTile(1, TILE_1);
 
     tile_SetBackgroundTile(0, 0, 0, 1);
-
+    
     // tile_Set_BackgroundScroll_Pre(0, 32700, 0);
 
     // tile_Set_BackgroundMatrix(0, 181, -181, 181, 181);
