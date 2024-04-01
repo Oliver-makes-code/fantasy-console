@@ -1,4 +1,4 @@
-#![feature(stmt_expr_attributes, decl_macro)]
+#![feature(stmt_expr_attributes, decl_macro, let_chains)]
 use std::{
     thread::sleep,
     time::{Duration, Instant},
@@ -7,11 +7,12 @@ use std::{
 use egui_glium::egui_winit::egui;
 use egui_glium::{egui_winit::egui::ViewportId, EguiGlium};
 use frame::{FrameBuffer, HEIGHT, WIDTH};
+use gamepad::GamepadStateManager;
 use glium::{
     backend::glutin::SimpleWindowBuilder, glutin::surface::WindowSurface, implement_vertex,
     index::NoIndices, uniform, Display, Program, Surface, VertexBuffer,
 };
-use tile::TileState;
+use tile::{Sprite, TileState};
 use wasm::WasmCart;
 use winit::{
     event::{Event, WindowEvent},
@@ -21,6 +22,7 @@ use winit::{
 
 pub mod color;
 pub mod frame;
+pub mod gamepad;
 pub mod math;
 pub mod tile;
 pub mod wasm;
@@ -127,14 +129,26 @@ impl WindowState {
     }
 
     fn update(&mut self) {
+        GamepadStateManager::update();
+
         WasmCart::update();
     }
 
     fn draw_frame(&mut self) {
         for y in 0..HEIGHT {
             WasmCart::v_blank(y as u32);
+            let tile_state = TileState::get();
+            let mut sprites: Vec<Sprite> = Vec::with_capacity(64);
+            for sprite in tile_state.sprites {
+                if (y as isize) >= sprite.position.1 as isize
+                    && (y as isize) < sprite.position.1 as isize + 16
+                    && sprite.visible
+                {
+                    sprites.push(sprite);
+                }
+            }
+            sprites.sort_by(|a, b| a.position.cmp(&b.position));
             for x in 0..WIDTH {
-                let tile_state = TileState::get();
                 let mut color = tile_state.palette[tile_state.background_color as usize];
                 for i in 0..8 {
                     let (palette_offset, palette) =
@@ -142,6 +156,18 @@ impl WindowState {
                     if palette_offset != 0 {
                         color = tile_state.palette[palette as usize + palette_offset as usize - 1];
                         break;
+                    }
+                }
+                for sprite in sprites.iter() {
+                    if (x as isize) >= sprite.position.0 as isize
+                        && (x as isize) < sprite.position.0 as isize + 16
+                    {
+                        let (palette_offset, palette) = sprite.get_color_offset(&tile_state, x, y);
+                        if palette_offset != 0 {
+                            color =
+                                tile_state.palette[palette as usize + palette_offset as usize - 1];
+                            break;
+                        }
                     }
                 }
                 self.frame.write_pixel(x, y, color);

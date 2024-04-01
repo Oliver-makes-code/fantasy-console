@@ -70,9 +70,15 @@ impl WasmCart {
             tile::get_background_scroll_pre_x,
             tile::get_background_scroll_pre_y,
             tile::set_background_transformation_matrix,
+            tile::get_sprite_position,
+            tile::get_sprite_position_x,
+            tile::get_sprite_position_y,
+            tile::set_sprite_position,
+            tile::set_sprite_flip,
             dbg::write_character,
             dbg::write_str,
-            dbg::end_line
+            dbg::end_line,
+            gamepad::get_state
         );
 
         let instance = linker.instantiate(&mut store, &module)?;
@@ -99,6 +105,16 @@ macro func($linker: expr, $($module: ident :: $f: ident),+) {
     $(
         $linker.func_wrap(stringify!($module), stringify!($f), $module::$f)?;
     )+
+}
+
+mod gamepad {
+    use crate::gamepad::GamepadStateManager;
+
+    pub fn get_state(gamepad_idx: u32) -> u32 {
+        GamepadStateManager::get().gamepads[gamepad_idx as usize]
+            .state
+            .bits() as u32
+    }
 }
 
 mod dbg {
@@ -216,5 +232,30 @@ mod tile {
             (Fixed::from(a as i16), Fixed::from(b as i16)),
             (Fixed::from(c as i16), Fixed::from(d as i16)),
         )
+    }
+
+    pub fn get_sprite_position(sprite: u32) -> (i32, i32) {
+        let pos = TileState::get().sprites[sprite as usize].position;
+
+        (pos.0 as i32, pos.1 as i32)
+    }
+
+    pub fn get_sprite_position_x(sprite: u32) -> i32 {
+        TileState::get().sprites[sprite as usize].position.0 as i32
+    }
+
+    pub fn get_sprite_position_y(sprite: u32) -> i32 {
+        TileState::get().sprites[sprite as usize].position.1 as i32
+    }
+
+    pub fn set_sprite_position(sprite: u32, x: i32, y: i32) {
+        TileState::get().sprites[sprite as usize].position = (x as i16, y as i16);
+    }
+
+    pub fn set_sprite_flip(sprite: u32, flip_x: u32, flip_y: u32) {
+        let sprite = &mut TileState::get().sprites[sprite as usize];
+
+        sprite.flip_x = flip_x != 0;
+        sprite.flip_y = flip_y != 0;
     }
 }

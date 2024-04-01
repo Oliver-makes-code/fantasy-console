@@ -4,7 +4,9 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-egui_glium = "0.26.2"
+bitflags = "2.5"
+egui_glium = "0.26"
+gilrs = "0.10"
 glium = "0.34.0"
-wasmtime = "19.0.0"
+wasmtime = "19.0"
 winit = "0.29"

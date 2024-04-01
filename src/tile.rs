@@ -19,6 +19,9 @@ pub struct TileMap {
 
 #[derive(Debug, Clone, Copy)]
 pub struct Sprite {
+    pub visible: bool,
+    pub flip_x: bool,
+    pub flip_y: bool,
     pub palette: u8,
     pub tile: u8,
     pub position: (i16, i16),
@@ -30,7 +33,9 @@ pub struct TileState {
     pub tiles: [Tile; 256],
     pub background_color: u8,
     pub backgrounds: [TileMap; 8],
+    pub sprites: [Sprite; 64],
 }
+
 impl Tile {
     pub fn get_color(&self, idx: usize) -> u8 {
         let b = self.0[idx / 2];
@@ -94,6 +99,33 @@ impl TileMap {
     }
 }
 
+impl Sprite {
+    pub fn get_color_offset(&self, tile_state: &TileState, px: usize, py: usize) -> (u8, u8) {
+        let tile = tile_state.tiles[self.tile as usize];
+        let tile_offset = self.get_tile_offset(px, py);
+        (tile.get_color(tile_offset), self.palette)
+    }
+
+    fn get_tile_offset(&self, px: usize, py: usize) -> usize {
+        let mut x = px.wrapping_sub(self.position.0 as usize);
+        let mut y = py.wrapping_sub(self.position.1 as usize);
+
+        x %= 16;
+
+        if self.flip_x {
+            x = 16 - x;
+        }
+
+        y %= 16;
+        if self.flip_y {
+            y = 16 - y;
+        }
+        y *= 16;
+
+        x | y
+    }
+}
+
 impl TileState {
     pub fn get() -> MutexGuard<'static, Self> {
         STATE
@@ -117,6 +149,14 @@ impl TileState {
                     (Fixed::from(0), Fixed::from(256)),
                 ),
             }; 8],
+            sprites: [Sprite {
+                visible: false,
+                flip_x: false,
+                flip_y: false,
+                palette: 0,
+                tile: 0,
+                position: (0, 0),
+            }; 64],
         }
     }
 }

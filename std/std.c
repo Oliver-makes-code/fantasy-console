@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include "std.h"
-#include "extern.h"
+#include "debug.h"
 
 // The size of a page in WASM
 #define PAGE_SIZE 65536

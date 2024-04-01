@@ -1,4 +1,4 @@
-#include <extern.h>
+#include <tile.h>
 #include <std.h>
 #include <stdint.h>
 
@@ -64,5 +64,4 @@ void update() {
 }
 
 void v_blank(uint8_t y) {
-    tile_Set_BackgroundScroll_Pre(0, y-16, y-16);
 }
