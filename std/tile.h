@@ -23,6 +23,10 @@ WASM("tile", "set_background_tile")
 extern void tile_SetBackgroundTile(uint8_t background, uint8_t x, uint8_t y, uint8_t tile);
 
 
+WASM("tile", "set_background_visible")
+extern void tile_Set_BackgroundVisible(uint8_t background, bool visible);
+
+
 WASM("tile", "set_background_scroll_pre")
 extern void tile_Set_BackgroundScroll_Pre(uint8_t background, int16_t x, int16_t y);
 
@@ -61,6 +65,7 @@ extern int16_t tile_Get_BackgroundScroll_Post_Y(uint8_t background);
 
 WASM("tile", "set_background_transformation_matrix")
 extern void tile_Set_BackgroundMatrix(uint8_t background, int16_t a, int16_t b, int16_t c, int16_t d);
+
 
 WASM("tile", "get_sprite_position")
 extern tilescroll_t tile_Get_SpritePosition(uint8_t sprite);

@@ -57,6 +57,7 @@ impl WasmCart {
             tile::write_palette,
             tile::write_tile,
             tile::set_background_tile,
+            tile::set_background_visible,
             tile::set_background_scroll_post,
             tile::set_background_scroll_post_x,
             tile::set_background_scroll_post_y,
@@ -171,6 +172,10 @@ mod tile {
     pub fn set_background_tile(bg: u32, x: i32, y: i32, tile: i32) {
         TileState::get().backgrounds[bg as usize].tiles
             [(x & 0b111111) as usize + (y & 0b111111) as usize * 64] = tile as u8;
+    }
+
+    pub fn set_background_visible(bg: u32, visible: u32) {
+        TileState::get().backgrounds[bg as usize].visible = visible != 0;
     }
 
     pub fn get_background_scroll_pre(bg: u32) -> (u32, u32) {

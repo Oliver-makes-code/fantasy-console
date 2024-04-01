@@ -15,6 +15,7 @@ pub struct TileMap {
     pub pre_offset: (i16, i16),
     pub post_offset: (i16, i16),
     pub matrix: ((Fixed, Fixed), (Fixed, Fixed)),
+    pub visible: bool,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -148,6 +149,7 @@ impl TileState {
                     (Fixed::from(256), Fixed::from(0)),
                     (Fixed::from(0), Fixed::from(256)),
                 ),
+                visible: true
             }; 8],
             sprites: [Sprite {
                 visible: false,

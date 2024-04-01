@@ -151,6 +151,9 @@ impl WindowState {
             for x in 0..WIDTH {
                 let mut color = tile_state.palette[tile_state.background_color as usize];
                 for i in 0..8 {
+                    if !tile_state.backgrounds[i].visible {
+                        continue;
+                    }
                     let (palette_offset, palette) =
                         tile_state.backgrounds[i].get_color_offset(&tile_state, x, y);
                     if palette_offset != 0 {

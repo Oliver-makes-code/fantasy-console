@@ -1,6 +1,7 @@
 #include <tile.h>
 #include <std.h>
 #include <stdint.h>
+#include <gamepad.h>
 
 const uint8_t TILE_0[] = {
     0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 
@@ -53,14 +54,27 @@ void init() {
     tile_WriteTile(1, TILE_1);
 
     tile_SetBackgroundTile(0, 0, 0, 1);
-    
-    // tile_Set_BackgroundScroll_Pre(0, 32700, 0);
 
-    // tile_Set_BackgroundMatrix(0, 181, -181, 181, 181);
+    for (uint8_t i = 1; i < 8; i++)
+        tile_Set_BackgroundVisible(i, false);
 }
 
 void update() {
-    tile_Set_BackgroundScroll_Pre(0, tile_Get_BackgroundScroll_Pre_X(0) + 1, 0);
+    gamepadstate_t state = gamepad_GetState(0);
+
+    tilescroll_t scroll = tile_Get_BackgroundScroll_Pre(0);
+
+    if (state & Gamepad_Left)
+        scroll.x++;
+    if (state & Gamepad_Right)
+        scroll.x--;
+
+    if (state & Gamepad_Up)
+        scroll.y++;
+    if (state & Gamepad_Down)
+        scroll.y--;
+
+    tile_Set_BackgroundScroll_Pre(0, scroll.x, scroll.y);
 }
 
 void v_blank(uint8_t y) {
