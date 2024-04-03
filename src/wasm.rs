@@ -71,13 +71,19 @@ impl WasmCart {
             tile::get_background_scroll_pre_x,
             tile::get_background_scroll_pre_y,
             tile::set_background_transformation_matrix,
-            tile::get_sprite_position,
-            tile::get_sprite_position_x,
-            tile::get_sprite_position_y,
-            tile::set_sprite_position,
-            tile::set_sprite_flip,
+            sprite::set_sprite_palette,
+            sprite::set_sprite_tile,
+            sprite::set_sprite_visible,
+            sprite::get_sprite_position,
+            sprite::get_sprite_position_x,
+            sprite::get_sprite_position_y,
+            sprite::set_sprite_position,
+            sprite::set_sprite_flip,
             dbg::write_character,
             dbg::write_str,
+            dbg::write_int,
+            dbg::write_uint,
+            dbg::write_ptr,
             dbg::end_line,
             gamepad::get_state
         );
@@ -140,6 +146,18 @@ mod dbg {
 
             print!("{}", cs.to_str().unwrap());
         }
+    }
+
+    pub fn write_int(i: i64) {
+        print!("{i}");
+    }
+
+    pub fn write_uint(i: u64) {
+        print!("{i}");
+    }
+
+    pub fn write_ptr(i: u32) {
+        print!("{i:#x}");
     }
 
     pub fn end_line() {
@@ -238,6 +256,22 @@ mod tile {
             (Fixed::from(c as i16), Fixed::from(d as i16)),
         )
     }
+}
+
+mod sprite {
+    use crate::tile::TileState;
+
+    pub fn set_sprite_visible(sprite: u32, visible: u32) {
+        TileState::get().sprites[sprite as usize].visible = visible != 0;
+    }
+
+    pub fn set_sprite_tile(sprite: u32, tile: u32) {
+        TileState::get().sprites[sprite as usize].tile = tile as u8;
+    }
+
+    pub fn set_sprite_palette(sprite: u32, palette: u32) {
+        TileState::get().sprites[sprite as usize].palette = palette as u8;
+    }
 
     pub fn get_sprite_position(sprite: u32) -> (i32, i32) {
         let pos = TileState::get().sprites[sprite as usize].position;
@@ -264,3 +298,4 @@ mod tile {
         sprite.flip_y = flip_y != 0;
     }
 }
+

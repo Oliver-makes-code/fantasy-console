@@ -1,5 +1,5 @@
+#include "common_types.h"
 #include <tile.h>
-#include <std.h>
 #include <stdint.h>
 #include <gamepad.h>
 
@@ -41,9 +41,11 @@ const uint8_t TILE_1[] = {
     0x04, 0x44, 0x44, 0x44, 0x44, 0x44, 0x44, 0x40
 };
 
-void init() {
-    std_Init();
+typedef struct {
+    position_s16_t pos;
+} player_t;
 
+void init() {
     tile_WritePalette(0, 0x8080FF);
     tile_WritePalette(1, 0x000000);
     tile_WritePalette(2, 0x00FF00);
@@ -53,7 +55,7 @@ void init() {
     tile_WriteTile(0, TILE_0);
     tile_WriteTile(1, TILE_1);
 
-    tile_SetBackgroundTile(0, 0, 0, 1);
+    tile_SetBackgroundTile(0, (position_u8_t) {0, 0}, 1);
 
     for (uint8_t i = 1; i < 8; i++)
         tile_Set_BackgroundVisible(i, false);
@@ -62,7 +64,7 @@ void init() {
 void update() {
     gamepadstate_t state = gamepad_GetState(0);
 
-    tilescroll_t scroll = tile_Get_BackgroundScroll_Pre(0);
+    position_s16_t scroll = tile_Get_BackgroundScroll_Pre(0);
 
     if (state & Gamepad_Left)
         scroll.x++;
@@ -74,7 +76,7 @@ void update() {
     if (state & Gamepad_Down)
         scroll.y--;
 
-    tile_Set_BackgroundScroll_Pre(0, scroll.x, scroll.y);
+    tile_Set_BackgroundScroll_Pre(0, scroll);
 }
 
 void v_blank(uint8_t y) {
