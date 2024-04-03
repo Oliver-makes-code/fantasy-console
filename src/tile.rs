@@ -138,7 +138,7 @@ impl TileState {
     fn new() -> Self {
         Self {
             background_color: 0,
-            palette: [(255, 0, 0).into(); 256],
+            palette: [(0, 0, 0).into(); 256],
             tiles: [Tile([0; 128]); 256],
             backgrounds: [TileMap {
                 palettes: [0; 4096],

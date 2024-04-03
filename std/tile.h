@@ -13,14 +13,22 @@ WASM("tile", "write_palette")
 extern void tile_WritePalette(uint8_t palette, uint32_t color);
 
 WASM("tile", "write_tile")
-extern void tile_WriteTile(uint8_t palette, const uint8_t *tile);
+extern void tile_WriteTile(uint8_t tile_number, const uint8_t *tile);
 
 WASM("tile", "set_background_tile")
-extern void tile_SetBackgroundTile(uint8_t background, position_u8_t pos, uint8_t tile);
+extern void tile_Set_BackgroundTile(uint8_t background, position_u8_t pos, uint8_t tile);
 
 
 WASM("tile", "set_background_visible")
 extern void tile_Set_BackgroundVisible(uint8_t background, bool visible);
+
+
+WASM("tile", "set_background_palette")
+extern void tile_Set_BackgroundPalette(uint8_t palette);
+
+
+WASM("tile", "set_background_tile_palette")
+extern void tile_Set_BackgroundTilePalette(uint8_t background, position_u8_t pos, uint8_t palette);
 
 
 WASM("tile", "set_background_scroll_pre")

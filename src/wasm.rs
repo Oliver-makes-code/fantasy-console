@@ -57,6 +57,8 @@ impl WasmCart {
             tile::write_palette,
             tile::write_tile,
             tile::set_background_tile,
+            tile::set_background_palette,
+            tile::set_background_tile_palette,
             tile::set_background_visible,
             tile::set_background_scroll_post,
             tile::set_background_scroll_post_x,
@@ -187,9 +189,18 @@ mod tile {
         .unwrap();
     }
 
-    pub fn set_background_tile(bg: u32, x: i32, y: i32, tile: i32) {
+    pub fn set_background_tile(bg: u32, x: u32, y: u32, tile: i32) {
         TileState::get().backgrounds[bg as usize].tiles
             [(x & 0b111111) as usize + (y & 0b111111) as usize * 64] = tile as u8;
+    }
+
+    pub fn set_background_palette(palette: u32) {
+        TileState::get().background_color = palette as u8;
+    }
+
+    pub fn set_background_tile_palette(bg: u32, x: i32, y: i32, palette: u32) {
+        TileState::get().backgrounds[bg as usize].palettes
+            [(x & 0b111111) as usize + (y & 0b111111) as usize * 64] = palette as u8;
     }
 
     pub fn set_background_visible(bg: u32, visible: u32) {
